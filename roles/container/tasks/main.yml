@@ -1,0 +1,13 @@
+---
+# tasks file for container
+
+- name: criando meus containers e diretorios remotos
+  docker_container:
+   name: "{{item}}"
+   image: httpd
+   state: started
+   volumes:
+    - "/srv/{{item}}:/usr/local/apache2/htdocs"
+  with_items:
+   - blue
+   - green

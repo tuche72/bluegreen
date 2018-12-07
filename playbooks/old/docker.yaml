@@ -1,0 +1,5 @@
+- name: criando container blue e green
+  hosts: docker
+  roles:
+   - docker
+

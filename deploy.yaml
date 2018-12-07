@@ -1,0 +1,5 @@
+
+- name: realizando o bluegreen deploy
+  hosts: docker
+  roles:
+   - deploy

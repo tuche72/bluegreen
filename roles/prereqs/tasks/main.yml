@@ -1,0 +1,5 @@
+---
+# tasks file for prereqs
+- name: instalando servicos
+  include: packages.yaml
+

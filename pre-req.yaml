@@ -1,0 +1,4 @@
+- name: garantindo os pre-reqs com role
+  hosts: docker
+  roles:
+   - pre-req

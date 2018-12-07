@@ -1,0 +1,6 @@
+
+- name: variavel registrada
+  hosts: docker.dexter.com.br
+  command: "test -f /tmp/blue/noar/"
+  register: mymotd
+  ignore_errors: yes

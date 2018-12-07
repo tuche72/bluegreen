@@ -1,0 +1,58 @@
+---
+# tasks file for deploy
+
+- name: verificando qual container esta no ar
+  stat:
+   path: /etc/nginx/sites-enabled/green.conf
+  register: vhost
+
+- name: copiado o site para o blue
+  copy:
+   src: "/var/lib/jenkins/workspace/bluegreen_deploy/index.html"
+   dest: /srv/blue/
+  when: vhost.stat.exists == True
+
+- name: copiando o site para o green
+  copy:
+   src: "/var/lib/jenkins/workspace/bluegreen_deploy/index.html"
+   dest: /srv/green/
+  when: vhost.stat.exists == False
+
+- name: pegando o ip do container green
+  shell: "docker exec green hostname -I"
+  register: ipgreen
+  when: vhost.stat.exists == False
+
+- name: pegando o ip do container blue
+  shell: "docker exec blue hostname -I"
+  register: ipblue
+  when: vhost.stat.exists == True
+
+- name: criando o vhost blue
+  template:
+   src: templates/vhost_blue
+   dest: /etc/nginx/sites-enabled/blue.conf
+  when: vhost.stat.exists == True
+
+- name: criando o vhost green
+  template:
+   src: templates/vhost_green
+   dest: /etc/nginx/sites-enabled/green.conf
+  when: vhost.stat.exists == False
+
+- name: apagando o ambiente green
+  file:
+   path: /etc/nginx/sites-enabled/green.conf
+   state: absent
+  when: vhost.stat.exists == True
+
+- name: apagando o ambiente blue
+  file:
+   path: /etc/nginx/sites-enabled/blue.conf
+   state: absent
+  when: vhost.stat.exists == False
+
+- name: realizando o restart do nginx
+  service:
+   name: nginx
+   state: reloaded

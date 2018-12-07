@@ -1,0 +1,5 @@
+
+- name: garantindo os containers
+  hosts: docker
+  roles:
+   - container

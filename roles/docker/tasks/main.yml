@@ -1,0 +1,20 @@
+---
+# tasks file for docker
+- name: criando o diretorio para o volume do docker
+  file:
+   name: "{{item}}"
+   state: directory
+  with_items:
+   - /tmp/blue
+   - /tmp/green
+
+- name: criando o container blue e green
+  docker_container:
+   name: "{{item.name}}"
+   image: httpd
+   state: started
+   volumes:
+    - "{{item.volume}}:/usr/local/apache2/htdocs/"
+  with_items:
+   - {name: green, volume: /green}
+   - {name: blue, volume: /blue}
